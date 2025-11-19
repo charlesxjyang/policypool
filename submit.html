@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PolicyPool – Submit a Link</title>
+    <style>
+      :root {
+        font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        color: #1c1c1c;
+        background-color: #f9f7f3;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: radial-gradient(circle at top left, #fff, #f5efe0);
+      }
+
+      header {
+        padding: 2rem 1.5rem 1rem;
+        text-align: center;
+        border-bottom: 1px solid rgba(28, 28, 28, 0.1);
+      }
+
+      header h1 {
+        margin: 0.25rem 0 0;
+        font-size: clamp(2rem, 4vw, 3rem);
+        letter-spacing: -0.02em;
+      }
+
+      header p {
+        margin: 0.5rem auto 0;
+        max-width: 42rem;
+        color: #555;
+      }
+
+      main {
+        flex: 1;
+        width: min(900px, 90vw);
+        margin: 2rem auto 4rem;
+        background-color: #fff;
+        border-radius: 1.25rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.07);
+        padding: 2rem;
+      }
+
+      nav a {
+        color: #0f5bce;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      nav a:hover {
+        text-decoration: underline;
+      }
+
+      .form-wrapper {
+        margin-top: 1.5rem;
+      }
+
+      .fields-overview {
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        border: 1px dashed rgba(15, 91, 206, 0.4);
+        border-radius: 0.75rem;
+        background-color: rgba(15, 91, 206, 0.05);
+        color: #1c3d6e;
+      }
+
+      .form-placeholder {
+        width: 100%;
+        min-height: 600px;
+        border: 2px dashed rgba(28, 28, 28, 0.2);
+        border-radius: 0.75rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+        color: #6c6c6c;
+        background: repeating-linear-gradient(
+          45deg,
+          rgba(28, 28, 28, 0.015),
+          rgba(28, 28, 28, 0.015) 10px,
+          rgba(28, 28, 28, 0.04) 10px,
+          rgba(28, 28, 28, 0.04) 20px
+        );
+      }
+
+      .form-placeholder strong {
+        color: #1c1c1c;
+      }
+
+      footer {
+        text-align: center;
+        padding: 2rem 1rem;
+        color: #777;
+      }
+
+      @media (max-width: 600px) {
+        main {
+          padding: 1.5rem;
+        }
+
+        header {
+          padding: 1.5rem 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="/">← Back to PolicyPool feed</a>
+      </nav>
+      <h1>PolicyPool Submissions</h1>
+      <p>
+        Share new essays, memos, or reflections from recently departed public servants.
+        Submissions go through a quick editorial review before joining the public feed.
+      </p>
+    </header>
+
+    <main>
+      <section class="fields-overview">
+        <h2>What we'll collect</h2>
+        <p>
+          The Airtable form stores the link title, canonical URL, short description, author
+          name, and a contact method so we can confirm details. There's also a hidden
+          <em>approval status</em> field that the editors update once an entry is ready to
+          publish.
+        </p>
+      </section>
+
+      <section class="form-wrapper" aria-label="Submission form">
+        <!-- Replace the placeholder div below with an Airtable iframe when ready. -->
+        <div class="form-placeholder">
+          <p>
+            <strong>Airtable form incoming.</strong>
+            Embed the form iframe here so contributors can submit directly.
+          </p>
+          <ul>
+            <li>Link title</li>
+            <li>URL</li>
+            <li>Description</li>
+            <li>Author</li>
+            <li>Contact info</li>
+            <li>Approval status (read-only/hidden)</li>
+          </ul>
+          <p style="margin-top: 1rem;">
+            Need the embed code? Visit the Airtable base → <em>Form</em> → <strong>Share</strong>.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      Built for the PolicyPool community.
+    </footer>
+  </body>
+</html>
