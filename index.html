@@ -124,17 +124,23 @@
         color: #777;
         margin-top: 0.25rem;
       }
+
+      .status {
+        padding: 0.85rem 1.25rem 1.25rem;
+      }
     </style>
   </head>
   <body>
     <header>
       <div class="brand">policypool</div>
       <nav>
-        <a class="cta" href="https://airtable.com/shrSubmissionForm" target="_blank" rel="noopener noreferrer"
-          >Submit a link</a
-        >
-        <a class="cta secondary" href="https://airtable.com/apppolicypool" target="_blank" rel="noopener noreferrer"
-          >View Airtable base</a
+        <a class="cta" href="/submit.html">Submit a link</a>
+        <a
+          class="cta secondary"
+          href="https://docs.google.com/forms/d/e/1FAIpQLSepXM8PjU2PJdZdN-aSlX7qGM8y2dUhuKffB3Y6gbDceJc55Q/viewform?usp=dialog"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Open Google Form</a
         >
       </nav>
     </header>
@@ -143,18 +149,19 @@
       <section class="hero">
         <h1>Fresh writing from former federal employees</h1>
         <p>
-          The policypool feed highlights essays, reports, and analysis from recently departed government experts.
-          Every item shown below is sourced from Airtable rows that have been marked <strong>approved</strong> by the
-          editorial team.
+          The policypool feed highlights essays, reports, and analysis from recently departed government experts. Every
+          item shown below is sourced from Google Form responses that have been marked <strong>approved</strong> in the
+          linked Google Sheet.
         </p>
         <p>
-          Use the buttons above to contribute new pieces or inspect the underlying Airtable base if you want to browse
-          the raw submissions.
+          Use the buttons above to contribute new pieces or open the submission form directly. Approved responses will
+          appear here automatically.
         </p>
       </section>
 
       <section class="feed-list" aria-label="Latest approved submissions">
         <ol id="feed"></ol>
+        <p id="feed-status" class="meta status" role="status"></p>
       </section>
     </main>
 
@@ -165,44 +172,104 @@
       </li>
     </template>
 
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
     <script>
-      // Placeholder data to illustrate the Hacker News–like layout. Replace with real Airtable API calls.
-      const approvedRows = [
-        {
-          title: "How to make procurement faster",
-          url: "https://example.com/procurement",
-          source: "example.com",
-          author: "S. Analyst",
-          published: "Mar 10, 2024",
-          upvotes: 24,
-        },
-        {
-          title: "Lessons from the Inflation Reduction Act rollout",
-          url: "https://example.org/ira-rollout",
-          source: "example.org",
-          author: "J. Policy",
-          published: "Mar 8, 2024",
-          upvotes: 18,
-        },
-      ];
+      const SHEET_CSV_URL =
+        "https://docs.google.com/spreadsheets/d/e/1FAIpQLSepXM8PjU2PJdZdN-aSlX7qGM8y2dUhuKffB3Y6gbDceJc55Q/pub?output=csv";
 
       const feedList = document.querySelector("#feed");
+      const status = document.querySelector("#feed-status");
       const template = document.querySelector("#feed-item-template");
 
-      approvedRows.forEach((row, index) => {
-        const clone = template.content.cloneNode(true);
-        const li = clone.querySelector(".feed-item");
-        const titleLink = clone.querySelector(".title");
-        const meta = clone.querySelector(".meta");
+      function setStatus(message) {
+        status.textContent = message;
+        status.style.display = message ? "block" : "none";
+      }
 
-        titleLink.href = row.url;
-        titleLink.textContent = `${row.title} (${row.source})`;
+      function buildNameNode(name, linkedin) {
+        if (!name) return null;
+        if (linkedin) {
+          const link = document.createElement("a");
+          link.href = linkedin;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.textContent = name;
+          return link;
+        }
 
-        meta.textContent = `Posted by ${row.author} • ${row.published} • ${row.upvotes} votes`;
+        const span = document.createElement("span");
+        span.textContent = name;
+        return span;
+      }
 
-        li.setAttribute("data-airtable-approved-index", index);
-        feedList.appendChild(clone);
-      });
+      async function loadFeed() {
+        setStatus("Loading latest submissions...");
+        feedList.innerHTML = "";
+
+        try {
+          const response = await fetch(SHEET_CSV_URL);
+          if (!response.ok) {
+            throw new Error(`Failed to fetch sheet: ${response.status}`);
+          }
+
+          const csvText = await response.text();
+          const parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true });
+          const rows = Array.isArray(parsed.data) ? parsed.data : [];
+
+          const approvedRows = rows.filter((row) => {
+            const approved = (row["Approved?"] || "").trim().toUpperCase();
+            return approved === "Y" || approved === "YES";
+          });
+
+          if (!approvedRows.length) {
+            setStatus("No approved submissions yet. New pieces will appear once the editors mark them approved.");
+            return;
+          }
+
+          approvedRows.forEach((row, index) => {
+            const clone = template.content.cloneNode(true);
+            const li = clone.querySelector(".feed-item");
+            const titleLink = clone.querySelector(".title");
+            const meta = clone.querySelector(".meta");
+
+            const pieceTitle = (row["Title of Piece"] || "Untitled submission").trim();
+            const pieceUrl = (row["Link to piece"] || "").trim();
+            titleLink.href = pieceUrl || "#";
+            titleLink.textContent = pieceTitle;
+
+            const submitterName = (row["Name"] || "").trim();
+            const linkedin = (row["Linkedin"] || "").trim();
+            const authors = (row["Authors, fill out if multiple authors with comma separation"] || "").trim();
+            const tags = (row["Tags for agencies e.g. NSF, OSTP, DOC, DOE, etc"] || "").trim();
+
+            const nameNode = buildNameNode(submitterName, linkedin);
+            if (nameNode) {
+              meta.append("By ");
+              meta.append(nameNode);
+            }
+
+            if (authors) {
+              if (meta.textContent) meta.append(" • ");
+              meta.append(`Authors: ${authors}`);
+            }
+
+            if (tags) {
+              if (meta.textContent) meta.append(" • ");
+              meta.append(`Tags: ${tags}`);
+            }
+
+            li.setAttribute("data-approval-index", index);
+            feedList.appendChild(clone);
+          });
+
+          setStatus("");
+        } catch (error) {
+          console.error(error);
+          setStatus("We couldn't load the feed right now. Please refresh or try again later.");
+        }
+      }
+
+      loadFeed();
     </script>
   </body>
 </html>

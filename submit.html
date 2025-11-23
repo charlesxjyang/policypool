@@ -70,29 +70,11 @@
         color: #1c3d6e;
       }
 
-      .form-placeholder {
+      .form-wrapper iframe {
         width: 100%;
         min-height: 600px;
-        border: 2px dashed rgba(28, 28, 28, 0.2);
+        border: 1px solid #ccc;
         border-radius: 0.75rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 2rem;
-        color: #6c6c6c;
-        background: repeating-linear-gradient(
-          45deg,
-          rgba(28, 28, 28, 0.015),
-          rgba(28, 28, 28, 0.015) 10px,
-          rgba(28, 28, 28, 0.04) 10px,
-          rgba(28, 28, 28, 0.04) 20px
-        );
-      }
-
-      .form-placeholder strong {
-        color: #1c1c1c;
       }
 
       footer {
@@ -119,8 +101,8 @@
       </nav>
       <h1>PolicyPool Submissions</h1>
       <p>
-        Share new essays, memos, or reflections from recently departed public servants.
-        Submissions go through a quick editorial review before joining the public feed.
+        Share new essays, memos, or reflections from recently departed public servants. Submissions go through a quick
+        editorial review before joining the public feed.
       </p>
     </header>
 
@@ -128,23 +110,21 @@
       <section class="fields-overview">
         <h2>What we'll collect</h2>
         <p>
-          The Airtable form stores the link title, canonical URL, short description, author
-          name, and a contact method so we can confirm details. There's also a hidden
-          <em>approval status</em> field that the editors update once an entry is ready to
-          publish.
+          The Google Form stores your name, LinkedIn profile, link to the piece, title, any co-authors, agency tags, and
+          optional notes for the editors. There's also an <strong>Approved?</strong> column in the linked Google Sheet
+          that the team updates before anything appears on the public list.
         </p>
       </section>
 
       <section class="form-wrapper" aria-label="Submission form">
         <iframe
-          class="airtable-embed"
-          src="https://airtable.com/embed/appjcFVmhlwbQu2l4/pagfqUzSOCjcju4Q3/form"
+          src="https://docs.google.com/forms/d/e/1FAIpQLSepXM8PjU2PJdZdN-aSlX7qGM8y2dUhuKffB3Y6gbDceJc55Q/viewform?embedded=true"
+          width="640"
+          height="1439"
           frameborder="0"
-          onmousewheel=""
-          width="100%"
-          height="533"
-          style="background: transparent; border: 1px solid #ccc;"
-        ></iframe>
+          marginheight="0"
+          marginwidth="0"
+          >Loading…</iframe>
       </section>
     </main>
 
