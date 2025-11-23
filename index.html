@@ -174,7 +174,7 @@
         if (!name) return null;
         if (linkedin) {
           const link = document.createElement("a");
-          link.href = linkedin;
+          link.href = addPolicypoolUtm(linkedin);
           link.target = "_blank";
           link.rel = "noopener noreferrer";
           link.textContent = name;
@@ -188,11 +188,9 @@
 
       function addPolicypoolUtm(url) {
         try {
-          const parsed = new URL(url);
-          if (parsed.hostname.includes("policypool.org")) {
-            parsed.searchParams.set("utm_source", "policypool_feed");
-            return parsed.toString();
-          }
+          const parsed = new URL(url, window.location.href);
+          parsed.searchParams.set("utm_source", "policypool_feed");
+          return parsed.toString();
         } catch (error) {}
 
         return url;
@@ -222,7 +220,9 @@
             return;
           }
 
-          approvedRows.forEach((row, index) => {
+          const displayRows = approvedRows.slice().reverse();
+
+          displayRows.forEach((row, index) => {
             const clone = template.content.cloneNode(true);
             const li = clone.querySelector(".feed-item");
             const titleLink = clone.querySelector(".title");
@@ -254,7 +254,7 @@
               meta.append(`Tags: ${tags}`);
             }
 
-            li.setAttribute("data-approval-index", index);
+            li.setAttribute("data-approval-index", approvedRows.length - 1 - index);
             feedList.appendChild(clone);
           });
 
