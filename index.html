@@ -138,7 +138,8 @@
         <p>
           The policypool feed highlights essays, reports, and analysis from recently departed government employees. 
           If you recently left government, we encourage you to write about your experience and perspective, particularly for forward-facing opportunities for reform. 
-          You can submit pieces <a href="https://policypool.org/submit.html" target="_blank>here</a>.
+          You can submit pieces
+          <a href="https://policypool.org/submit.html?utm_source=policypool_feed" target="_blank" rel="noopener noreferrer">here</a>.
         </p>
       </section>
 
@@ -185,6 +186,18 @@
         return span;
       }
 
+      function addPolicypoolUtm(url) {
+        try {
+          const parsed = new URL(url);
+          if (parsed.hostname.includes("policypool.org")) {
+            parsed.searchParams.set("utm_source", "policypool_feed");
+            return parsed.toString();
+          }
+        } catch (error) {}
+
+        return url;
+      }
+
       async function loadFeed() {
         setStatus("Loading latest submissions...");
         feedList.innerHTML = "";
@@ -217,7 +230,7 @@
 
             const pieceTitle = (row["Title of Piece"] || "Untitled submission").trim();
             const pieceUrl = (row["Link to piece"] || "").trim();
-            titleLink.href = pieceUrl || "#";
+            titleLink.href = pieceUrl ? addPolicypoolUtm(pieceUrl) : "#";
             titleLink.textContent = pieceTitle;
 
             const submitterName = (row["Name"] || "").trim();
