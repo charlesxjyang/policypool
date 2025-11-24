@@ -188,9 +188,12 @@
 
       function buildNameNode(name, linkedin) {
         if (!name) return null;
-        if (linkedin) {
+        const linkedinValue = linkedin?.trim();
+        const hasLinkedin = linkedinValue && linkedinValue.toUpperCase() !== "N/A";
+
+        if (hasLinkedin) {
           const link = document.createElement("a");
-          link.href = addPolicypoolUtm(linkedin);
+          link.href = addPolicypoolUtm(linkedinValue);
           link.target = "_blank";
           link.rel = "noopener noreferrer";
           link.textContent = name;
@@ -258,16 +261,21 @@
             if (nameNode) {
               meta.append("By ");
               meta.append(nameNode);
+
+              if (tags) {
+                meta.append(" (");
+                meta.append(`Tags: ${tags}`);
+                meta.append(")");
+              }
+            }
+
+            if (!nameNode && tags) {
+              meta.append(`Tags: ${tags}`);
             }
 
             if (authors) {
               if (meta.textContent) meta.append(" • ");
               meta.append(`Authors: ${authors}`);
-            }
-
-            if (tags) {
-              if (meta.textContent) meta.append(" • ");
-              meta.append(`Tags: ${tags}`);
             }
 
             li.setAttribute("data-approval-index", approvedRows.length - 1 - index);
